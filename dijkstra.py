@@ -9,11 +9,13 @@ class Graph:
         self.visited = {}
         self.timeGet = 0
         self.iteration = 0
+        self.path = []
+        self.filename = ""
 
     def readFile(self, path):
         lines = []
-        filename = path + ".txt"
-        with open(filename, 'r') as f:
+        self.filename = path
+        with open(self.filename, 'r') as f:
             for line in f:
                 src, dest, weight = line.split(' ')
                 lines.append((src, dest, float(weight)))
@@ -36,12 +38,15 @@ class Graph:
 
     def printPath(self, dest):
         if self.prevNode[dest] == -1:
+            self.path.append(dest)
             print(dest, end=' ')
             return
         self.printPath(self.prevNode[dest])
+        self.path.append(dest)
         print("->", dest, end=' ')
 
     def printResult(self, src, dest):
+        self.path = []
         print("Shortest path from " + src + " to " + dest + ":")
         print("Distance: " + str(self.distance[dest]))
         self.printPath(dest)
@@ -76,7 +81,8 @@ class Graph:
         end = time.time()
         self.timeGet = end - start
 
-g = Graph()
-g.readFile("case1")
-g.dijkstra("a", "b")
-g.printResult("a", "b")
+# g = Graph()
+# g.readFile("case1")
+# g.dijkstra("a", "e")
+# g.printResult("a", "e")
+# print(g.path)
