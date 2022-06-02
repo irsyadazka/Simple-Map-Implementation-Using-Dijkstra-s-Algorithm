@@ -20,9 +20,11 @@ class Graph:
                 src, dest, weight = line.split(' ')
                 lines.append((src, dest, float(weight)))
         
+        # Create the set nodes
         for node in lines:
             self.nodes.update([node[0], node[1]])
 
+        # Create the edges
         self.edges = {node: set() for node in self.nodes}
         for edge in lines:
             self.edges[edge[0]].add((edge[1], edge[2]))
@@ -34,8 +36,9 @@ class Graph:
             if self.distance[node] < min and self.visited[node] == False:
                 min = self.distance[node]
                 min_node = node
-        return min_node
+        return min_node # get the node with the lowest distance
 
+    # Fill the path node
     def getPath(self, dest):
         if self.prevNode[dest] == -1:
             self.path.append(dest)
@@ -64,6 +67,7 @@ class Graph:
         self.iteration = 0
         self.distance[src] = 0
 
+        # Initiate the algorithm
         for node in self.nodes:
             if node != src:
                 self.distance[node] = float("inf")
@@ -87,4 +91,4 @@ class Graph:
             if u == dest:
                 break   
         end = time.time()
-        self.timeGet = (end - start)*1000
+        self.timeGet = (end - start)*1000 # time for getting the solution

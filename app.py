@@ -11,21 +11,24 @@ def graphPrep():
     graph = Graph()
     filename = askopenfilename(title="Choose a file", filetypes=[("Text files", "*.txt")])
     graph.readFile(filename)
-    fileLabel.config(text=graph.filename)
+    fileLabel.config(text=graph.filename) # show the filename in window
 
     plt.clf()
+    # Creating graph
     graphDraw = nx.DiGraph()
     for node in graph.nodes:
         for edge in graph.edges[node]:
             graphDraw.add_edge(node, edge[0], weight=edge[1])
     
     nodeList = list(graph.nodes)
-    nodeList.sort()
+    nodeList.sort() # sort the node list
+    # Add to the option menu
     srcListNode = OptionMenu(window, srcNodes, *nodeList)
     destListNode = OptionMenu(window, destNodes, *nodeList)
     srcListNode.place(x = 190, y = 75)
     destListNode.place(x = 410, y = 75)
 
+    # Draw the graph
     pos = nx.circular_layout(graphDraw)
     nx.draw(graphDraw, pos, with_labels=True)
     edgeLabels = nx.get_edge_attributes(graphDraw, 'weight')
@@ -40,7 +43,7 @@ def graphPrep():
 def solvingStep():
     global graph
 
-    graph.dijkstra(srcNodes.get(), destNodes.get())
+    graph.dijkstra(srcNodes.get(), destNodes.get()) # solve the problem
     Label(text='Detail of Shortest path from ' + str(srcNodes.get()) + ' to ' + str(destNodes.get()) + ':', font=("Courier-Bold", 16), bg='#121943').place(x = 130, y = 480)
     
     if graph.distance[destNodes.get()] == float("inf"):
@@ -48,7 +51,7 @@ def solvingStep():
         distanceLabel.config(text="")
         infoLabel.config(text="")
     else:
-        graph.printResult(srcNodes.get(), destNodes.get())
+        graph.printResult(srcNodes.get(), destNodes.get()) # print the result on terminal
         if len(graph.path) > 1:
             eachStep = []
             for i in range(len(graph.path)-1):
@@ -58,12 +61,12 @@ def solvingStep():
                 for node in graph.nodes:
                     for edge in graph.edges[node]:
                         if [node, edge[0]] in eachStep:
-                            currDistance += edge[1]
+                            currDistance += edge[1] # get distance on each step
                             graphDraw.add_edge(node, edge[0], weight=edge[1], color='red')
                         else:
                             graphDraw.add_edge(node, edge[0], weight=edge[1], color='black')
 
-                colorStep = [graphDraw[i][j]['color'] for (i, j) in graphDraw.edges()]
+                colorStep = [graphDraw[i][j]['color'] for (i, j) in graphDraw.edges()] # set color
                 pos = nx.circular_layout(graphDraw)
                 nx.draw(graphDraw, pos, with_labels=True, edge_color=colorStep)
                 edgeLabels = nx.get_edge_attributes(graphDraw, 'weight')
@@ -82,6 +85,7 @@ def solvingStep():
                 time.sleep(2)
                 window.update()
 
+        # Show the details of the solved graph
         pathLabel.config(text=graph.printPath())
         distanceLabel.config(text="Total Distance: " + str(graph.distance[destNodes.get()]))
         infoLabel.config(text="Time taken is " + str(graph.timeGet) + " ms with " + str(graph.iteration) + " iterations")
