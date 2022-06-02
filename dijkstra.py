@@ -36,20 +36,28 @@ class Graph:
                 min_node = node
         return min_node
 
-    def printPath(self, dest):
+    def getPath(self, dest):
         if self.prevNode[dest] == -1:
             self.path.append(dest)
-            print(dest, end=' ')
             return
-        self.printPath(self.prevNode[dest])
+        self.getPath(self.prevNode[dest])
         self.path.append(dest)
-        print("->", dest, end=' ')
+    
+    def printPath(self):
+        nodePath = "Path: "
+        for i in range(len(self.path)):
+            if i == len(self.path)-1:
+                nodePath += self.path[i]
+            else:
+                nodePath += self.path[i] + " -> "
+        return nodePath
 
     def printResult(self, src, dest):
         self.path = []
-        print("Shortest path from " + src + " to " + dest + ":")
+        print("Detail of Shortest path from " + src + " to " + dest + ":")
         print("Distance: " + str(self.distance[dest]))
-        self.printPath(dest)
+        self.getPath(dest)
+        print(self.printPath())
         print("Time taken is", self.timeGet, "with", self.iteration, "iterations")
 
     def dijkstra(self, src, dest):
@@ -79,10 +87,4 @@ class Graph:
             if u == dest:
                 break   
         end = time.time()
-        self.timeGet = end - start
-
-# g = Graph()
-# g.readFile("case1")
-# g.dijkstra("a", "e")
-# g.printResult("a", "e")
-# print(g.path)
+        self.timeGet = (end - start)*1000
