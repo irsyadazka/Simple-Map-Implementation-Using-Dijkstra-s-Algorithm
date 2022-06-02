@@ -80,6 +80,7 @@ def solvingStep():
 
                 pathLabel.config(text="Edge taken: " + str(graph.path[i]) + " -> " + str(graph.path[i+1]))
                 distanceLabel.config(text="Distance so far: " + str(currDistance))
+                infoLabel.config(text="")
 
                 # Wait time
                 time.sleep(2)
