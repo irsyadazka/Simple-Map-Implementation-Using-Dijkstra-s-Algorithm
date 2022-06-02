@@ -12,11 +12,19 @@ def graphPrep():
     filename = askopenfilename(title="Choose a file", filetypes=[("Text files", "*.txt")])
     graph.readFile(filename)
     fileLabel.config(text=graph.filename)
+
     plt.clf()
     graphDraw = nx.DiGraph()
     for node in graph.nodes:
         for edge in graph.edges[node]:
             graphDraw.add_edge(node, edge[0], weight=edge[1])
+    
+    nodeList = list(graph.nodes)
+    nodeList.sort()
+    srcListNode = OptionMenu(window, srcNodes, *nodeList)
+    destListNode = OptionMenu(window, destNodes, *nodeList)
+    srcListNode.place(x = 190, y = 75)
+    destListNode.place(x = 410, y = 75)
 
     pos = nx.circular_layout(graphDraw)
     nx.draw(graphDraw, pos, with_labels=True)
@@ -29,18 +37,12 @@ def graphPrep():
     canvas.draw()
     canvas.get_tk_widget().pack()
 
-    nodeList = list(graph.nodes)
-    nodeList.sort()
-    srcListNode = OptionMenu(window, srcNodes, *nodeList)
-    destListNode = OptionMenu(window, destNodes, *nodeList)
-    srcListNode.place(x = 190, y = 75)
-    destListNode.place(x = 410, y = 75)
-
 def solvingStep():
     global graph
 
     graph.dijkstra(srcNodes.get(), destNodes.get())
     Label(text='Detail of Shortest path from ' + str(srcNodes.get()) + ' to ' + str(destNodes.get()) + ':', font=("Courier-Bold", 16), bg='#121943').place(x = 130, y = 480)
+    
     if graph.distance[destNodes.get()] == float("inf"):
         pathLabel.config(text="No Path Founded")
         distanceLabel.config(text="")
@@ -76,6 +78,7 @@ def solvingStep():
                 pathLabel.config(text="Edge taken: " + str(graph.path[i]) + " -> " + str(graph.path[i+1]))
                 distanceLabel.config(text="Distance so far: " + str(currDistance))
 
+                # Wait time
                 time.sleep(2)
                 window.update()
 
@@ -83,7 +86,9 @@ def solvingStep():
         distanceLabel.config(text="Total Distance: " + str(graph.distance[destNodes.get()]))
         infoLabel.config(text="Time taken is " + str(graph.timeGet) + " ms with " + str(graph.iteration) + " iterations")
 
+# Make a window app
 window = Tk()
+
 window.title("Dijkstra App")
 window.geometry('960x700')
 window.configure(background='#121943')
@@ -92,25 +97,32 @@ Label(text='Shortest Path via Dijkstra Algorithm', bg='#121943', fg='light gray'
 
 container = plt.figure(figsize=(7, 3))
 
+# To select a file
+Button(text='Select File', bg='#111840', font=("Courier", 12), command= lambda: graphPrep()).place(x = 130, y = 45)
 fileLabel = Label(text="Filename", bg='#121943')
 fileLabel.place(x = 250, y = 45)
-Button(text='Select File', bg='#111840', font=("Courier", 12), command= lambda: graphPrep()).place(x = 130, y = 45)
 
+# To select source and destination node
 srcNodes = StringVar()
 Label(text='Source: ', bg='#121943', font=("Courier", 12)).place(x = 130, y = 75)
 srcListNode = OptionMenu(window, srcNodes, "Select Node...")
 srcListNode.place(x = 190, y = 75)
+
 destNodes = StringVar()
 Label(text='Destination: ', bg='#121943', font=("Courier", 12)).place(x = 320, y = 75)
 destListNode = OptionMenu(window, destNodes, "Select Node...")
 destListNode.place(x = 410, y = 75)
 
+# Start solving the problem
 Button(text="Solve It!", bg='#111840', font=("Courier", 12), command= lambda:solvingStep()).place(x = 130, y = 115)
 
+# Information labels
 pathLabel = Label(text="", bg='#121943', font=("Courier", 14))
 pathLabel.place(x = 130, y = 505)
+
 distanceLabel = Label(text="", bg='#121943', font=("Courier", 14))
 distanceLabel.place(x = 130, y = 530)
+
 infoLabel = Label(text="", bg='#121943', font=("Courier", 14))
 infoLabel.place(x = 130, y = 555)
 

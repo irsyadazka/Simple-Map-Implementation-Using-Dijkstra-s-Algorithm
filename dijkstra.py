@@ -52,7 +52,7 @@ class Graph:
                 nodePath += self.path[i] + " -> "
         return nodePath
 
-    def printResult(self, src, dest):
+    def printResult(self, src, dest): # for debugging the logic
         self.path = []
         print("Detail of Shortest path from " + src + " to " + dest + ":")
         print("Distance: " + str(self.distance[dest]))
